@@ -2,8 +2,8 @@ package senwang.geoquiz;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 public class QuizActivity extends ActionBarActivity {
 
 	private static final String KEY_INDEX = "index";
+	private static final String KEY_IS_CHEATER = "is_cheater";
 
 	private Button mTrueButton;
 	private Button mFalseButton;
@@ -38,6 +39,9 @@ public class QuizActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 		Log.d(Utils.getTag(), "onCreate(Bundle) called");
 		setContentView(R.layout.activity_quiz);
+
+		ActionBar actionBar = getSupportActionBar();
+		actionBar.setSubtitle("Bodies of Water");
 
         mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
 
@@ -78,6 +82,7 @@ public class QuizActivity extends ActionBarActivity {
 
 		if (savedInstanceState != null) {
 			mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+			mIsCheater = savedInstanceState.getBoolean(KEY_IS_CHEATER);
 		}
 
         updateQuestion();
@@ -114,6 +119,7 @@ public class QuizActivity extends ActionBarActivity {
 		super.onSaveInstanceState(outState);
 		Log.i(Utils.getTag(), "onSaveInstanceState");
 		outState.putInt(KEY_INDEX, mCurrentIndex);
+		outState.putBoolean(KEY_IS_CHEATER, mIsCheater);
 	}
 
 	@Override

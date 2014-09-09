@@ -12,7 +12,10 @@ public class CheatActivity extends Activity {
     public static final String EXTRA_ANSWER_IS_TRUE = "senwang.geoquiz.answer_is_true";
     public static final String EXTRA_ANSWER_SHOWN = "senwang.geoquiz.answer_shown";
 
+	public static final String KEY_IS_ANSWER_SHOWN = "is_answer_shown";
+
     private boolean mAnswerIsTrue;
+	private boolean mIsAnswerShown;
 
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
@@ -22,11 +25,22 @@ public class CheatActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cheat);
 
-        setAnswerShownResult(false);
+		mIsAnswerShown = false;
+		if (savedInstanceState != null) {
+			mIsAnswerShown = savedInstanceState.getBoolean(KEY_IS_ANSWER_SHOWN);
+		}
+        setAnswerShownResult(mIsAnswerShown);
 
         mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
 
         mAnswerTextView = (TextView) findViewById(R.id.answerTextView);
+		if (mIsAnswerShown) {
+			if (mAnswerIsTrue) {
+				mAnswerTextView.setText(R.string.true_button);
+			} else {
+				mAnswerTextView.setText(R.string.false_button);
+			}
+		}
 
         mShowAnswerButton = (Button) findViewById(R.id.showAnswerButton);
         mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
@@ -37,12 +51,19 @@ public class CheatActivity extends Activity {
                 } else {
                     mAnswerTextView.setText(R.string.false_button);
                 }
-                setAnswerShownResult(true);
+				mIsAnswerShown = true;
+                setAnswerShownResult(mIsAnswerShown);
             }
         });
     }
 
-    private void setAnswerShownResult(boolean isAnswerShown) {
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putBoolean(KEY_IS_ANSWER_SHOWN, mIsAnswerShown);
+	}
+
+	private void setAnswerShownResult(boolean isAnswerShown) {
         Intent data = new Intent();
         data.putExtra(EXTRA_ANSWER_SHOWN, isAnswerShown);
         setResult(RESULT_OK, data);
